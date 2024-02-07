@@ -43,7 +43,7 @@ static uint64_t shim_objc_msgSendCommon(uc_engine *uc, struct native_call_contex
     }
     SEL op = (SEL)ctx->arm64_call_context->x[1];
     IMP impl = class_getMethodImplementation(cls, op);
-    if (impl == _objc_msgForward || impl == _objc_msgForward_stret) {
+    if (impl == _objc_msgForward/* || impl == _objc_msgForward_stret*/) {
         // message forwarding is handled further down
     }
     BOOL meta = class_isMetaClass(cls);

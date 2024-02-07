@@ -8,7 +8,7 @@
 #include <mach/mach_init.h>
 #include <unicorn/unicorn.h>
 #include <capstone/capstone.h>
-#include <ffi.h>
+#include <ffi/ffi.h>
 
 #define hidden __attribute__ ((visibility ("hidden")))
 

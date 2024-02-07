@@ -101,7 +101,7 @@ int is_vfp_type (const ffi_type *ty)
       return 0;
     case FFI_TYPE_FLOAT:
     case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
+    //case FFI_TYPE_LONGDOUBLE:
       ele_count = 1;
       goto done;
     case FFI_TYPE_COMPLEX:
@@ -110,7 +110,7 @@ int is_vfp_type (const ffi_type *ty)
 	{
 	case FFI_TYPE_FLOAT:
 	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	//case FFI_TYPE_LONGDOUBLE:
 	  ele_count = 2;
 	  goto done;
 	}
@@ -147,7 +147,7 @@ int is_vfp_type (const ffi_type *ty)
         return 0;
       break;
     case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
+    //case FFI_TYPE_LONGDOUBLE:
       ele_count = size / sizeof(double);
       if (size != ele_count * sizeof(double))
         return 0;
@@ -274,7 +274,7 @@ ffi_prep_cif_machdep_arm64 (ffi_cif_arm64 *cif)
 
     case FFI_TYPE_FLOAT:
     case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
+    //case FFI_TYPE_LONGDOUBLE:
     case FFI_TYPE_STRUCT:
     case FFI_TYPE_COMPLEX:
       flags = is_vfp_type (rtype);
@@ -511,7 +511,7 @@ int ffi_closure_SYSV_inner_arm64 (ffi_cif_arm64 *cif,
 
 	case FFI_TYPE_FLOAT:
 	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	//case FFI_TYPE_LONGDOUBLE:
 	case FFI_TYPE_STRUCT:
 	case FFI_TYPE_COMPLEX:
 	  h = is_vfp_type (ty);
@@ -618,7 +618,7 @@ hidden int arm64_rflags_for_type(ffi_type *rtype) {
             break;
         case FFI_TYPE_FLOAT:
         case FFI_TYPE_DOUBLE:
-        case FFI_TYPE_LONGDOUBLE:
+        //case FFI_TYPE_LONGDOUBLE:
         case FFI_TYPE_STRUCT:
         case FFI_TYPE_COMPLEX:
             rflags = is_vfp_type (rtype);
@@ -767,7 +767,7 @@ hidden void call_emulated_function (ffi_cif *cif, void *ret, void **args, void *
             break;
             case FFI_TYPE_FLOAT:
             case FFI_TYPE_DOUBLE:
-            case FFI_TYPE_LONGDOUBLE:
+            //case FFI_TYPE_LONGDOUBLE:
             case FFI_TYPE_STRUCT:
             case FFI_TYPE_COMPLEX:
             {

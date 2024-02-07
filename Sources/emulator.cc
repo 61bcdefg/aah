@@ -163,7 +163,7 @@ hidden void print_disasm(struct emulator_ctx *ctx, int level) {
     } else if (level > 0) {
         if (ctx->instr_hook == 0) {
             // print emulated instructions as they are fetched
-            cs_err cerr = cs_open(CS_ARCH_ARM64, CS_MODE_LITTLE_ENDIAN, &(ctx->capstone));
+            cs_err cerr = cs_open(CS_ARCH_AARCH64, CS_MODE_LITTLE_ENDIAN, &(ctx->capstone));
             if (cerr != CS_ERR_OK) {
                 fprintf(stderr, "cs_open: %s\n", cs_strerror(cerr));
                 abort();

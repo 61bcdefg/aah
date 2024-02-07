@@ -17,24 +17,24 @@ static bool isJump(csh capstone, cs_insn *ins, cs_arch arch) {
                  cs_insn_group(capstone, ins, CS_GRP_BRANCH_RELATIVE)) &&
                 !cs_insn_group(capstone, ins, CS_GRP_CALL);
     // capstone doesn't have the right groups for pointer authenticated jumps
-    if (jump == false && arch == CS_ARCH_ARM64 && ins->detail && ins->detail->groups_count == 0 &&
-        (ins->id == ARM64_INS_BLRAA ||
-         ins->id == ARM64_INS_BLRAAZ ||
-         ins->id == ARM64_INS_BLRAB ||
-         ins->id == ARM64_INS_BLRABZ ||
-         ins->id == ARM64_INS_BRAA ||
-         ins->id == ARM64_INS_BRAAZ ||
-         ins->id == ARM64_INS_BRAB ||
-         ins->id == ARM64_INS_BRABZ)) {
+    if (jump == false && arch == CS_ARCH_AARCH64 && ins->detail && ins->detail->groups_count == 0 &&
+        (ins->id == AArch64_INS_BLRAA ||
+         ins->id == AArch64_INS_BLRAAZ ||
+         ins->id == AArch64_INS_BLRAB ||
+         ins->id == AArch64_INS_BLRABZ ||
+         ins->id == AArch64_INS_BRAA ||
+         ins->id == AArch64_INS_BRAAZ ||
+         ins->id == AArch64_INS_BRAB ||
+         ins->id == AArch64_INS_BRABZ)) {
         return true;
     }
     return jump;
 }
 
 static bool isConditionalJump(csh capstone, cs_insn *ins, cs_arch arch) {
-    if (arch == CS_ARCH_ARM64) {
-        arm64_cc cc = ins->detail->arm64.cc;
-        return cc >= ARM64_CC_EQ && cc <= ARM64_CC_LE;
+    if (arch == CS_ARCH_AARCH64) {
+        AArch64CC_CondCode cc = ins->detail->aarch64.cc;
+        return cc >= AArch64CC_EQ && cc <= AArch64CC_LE;
     } else if (arch == CS_ARCH_X86) {
         return (ins->mnemonic[0] == 'j' && ins->id != X86_INS_JMP && ins->id != X86_INS_LJMP) ||
             ins->id == X86_INS_LOOP ||
@@ -48,8 +48,8 @@ static uint64_t targetForJump(csh capstone, cs_insn *ins, cs_arch arch) {
     // won't work for switches
     int index = cs_op_index(capstone, ins, CS_OP_IMM, 1);
     switch (arch) {
-        case CS_ARCH_ARM64:
-            return ins->detail->arm64.operands[index].imm;
+        case CS_ARCH_AARCH64:
+            return ins->detail->aarch64.operands[index].imm;
         case CS_ARCH_X86:
             return ins->detail->x86.operands[index].imm;
         default:
@@ -60,9 +60,9 @@ static uint64_t targetForJump(csh capstone, cs_insn *ins, cs_arch arch) {
 static bool isProcEnd(csh capstone, cs_insn *ins, cs_arch arch) {
     bool ret = cs_insn_group(capstone, ins, CS_GRP_RET);
     // capstone doesn't have the right groups for pointer authenticated returns
-    if (ret == false && arch == CS_ARCH_ARM64 &&
-        (ins->id == ARM64_INS_RETAA ||
-         ins->id == ARM64_INS_RETAB)) {
+    if (ret == false && arch == CS_ARCH_AARCH64 &&
+        (ins->id == AArch64_INS_RETAA ||
+         ins->id == AArch64_INS_RETAB)) {
         return true;
     } else if (ret == false && arch == CS_ARCH_X86 &&
                (ins->id == X86_INS_UD0 ||
@@ -111,7 +111,7 @@ static BOOL allValidInstructions(cs_insn *start, cs_insn *end) {
 static NSString* NSStringFromCSArch(cs_arch arch) {
     switch (arch) {
         case CS_ARCH_ARM: return @"ARM";
-        case CS_ARCH_ARM64: return @"ARM64";
+        case CS_ARCH_AARCH64: return @"ARM64";
         case CS_ARCH_MIPS: return @"MIPS";
         case CS_ARCH_X86: return @"X86";
         case CS_ARCH_PPC: return @"PowerPC";
@@ -168,7 +168,7 @@ static NSString* NSStringFromCSArch(cs_arch arch) {
             break;
             
         case CPU_TYPE_ARM64:
-            arch = CS_ARCH_ARM64;
+            arch = CS_ARCH_AARCH64;
             mode = CS_MODE_LITTLE_ENDIAN;
             break;
         default:

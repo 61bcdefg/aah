@@ -30,9 +30,8 @@ __attribute__((constructor)) static void init_aah(void) {
 hidden void sighandler (int signo, siginfo_t *si, void *data) {
     ucontext_t *uctx = (ucontext_t *)data;
     mcontext_t mc = uctx->uc_mcontext;
-    uint64_t pc = mc->__ss.__rip;
+    uint64_t pc = mc->__ss.__pc;
     Dl_info info;
-    //printf("bus error at %p\n", (void*)pc);
     uint32_t should_emulate = should_emulate_at(pc);
     if (should_emulate) {
         // get native cif for call
@@ -43,7 +42,7 @@ hidden void sighandler (int signo, siginfo_t *si, void *data) {
             cif = wrapper->cif_native;
         } else if (cif == CIF_MARKER_SHIM) {
             abort();
-        } else if (cif == NULL && mc->__ss.__rsi == loadSelector) {
+        } else if (cif == NULL && mc->__ss.__x[1] == loadSelector) {
             // calling unknown load method
             cif_cache_add((void*)pc, "v@:", "+[??? load]");
             cif = cif_cache_get_native((void*)pc);
@@ -57,11 +56,11 @@ hidden void sighandler (int signo, siginfo_t *si, void *data) {
                 fprintf(stderr, "ffi_prep_closure_loc failed\n");
                 abort();
             }
-            mc->__ss.__rip = (uint64_t)ctx->closure_code;
+            mc->__ss.__pc = (uint64_t)ctx->closure_code;
         } else if (should_emulate & AAH_RANGE_LIBCPP) {
             // FIXME: loading emulated libc++ messes up the namespace
             dladdr((void*)pc, &info);
-            mc->__ss.__rip = (uint64_t)resolve_symbol("/usr/lib/libc++.1.dylib", info.dli_sname);
+            mc->__ss.__pc = (uint64_t)resolve_symbol("/usr/lib/libc++.1.dylib", info.dli_sname);
         } else {
             // TODO: when is this? maybe blocks or callbacks
             dladdr((void*)pc, &info);
